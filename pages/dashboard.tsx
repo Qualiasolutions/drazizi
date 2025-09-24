@@ -313,7 +313,7 @@ export default function Dashboard() {
     const metrics: any = {}
 
     Object.keys(multiWellData).forEach(wellId => {
-      const wellData = multiWellData[wellId]
+      const wellData = multiWellData[wellId as keyof typeof multiWellData]
       const events = detectInterference(wellId, wellData)
 
       // Calculate total production loss due to interference
@@ -390,7 +390,7 @@ export default function Dashboard() {
         let totalProdLoss = 0
 
         Object.keys(multiWellData).forEach(wellId => {
-          const interference = detectInterference(wellId, multiWellData[wellId])
+          const interference = detectInterference(wellId, multiWellData[wellId as keyof typeof multiWellData])
           if (interference.severity === 'severe_interference') {
             severeCases.push({ well: wellId, loss: interference.productionLoss })
             totalProdLoss += interference.productionLoss
@@ -557,18 +557,18 @@ Would you like me to:
     labels: multiWellData['X1'].map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })),
     datasets: selectedWells.map((wellId, index) => ({
       label: `Well ${wellId}`,
-      data: multiWellData[wellId]?.map(d => d.oilRate) || [],
+      data: multiWellData[wellId as keyof typeof multiWellData]?.map(d => d.oilRate) || [],
       borderColor: chartColors[index],
       backgroundColor: chartColors[index] + '20',
       fill: false,
       tension: 0.4,
-      pointBackgroundColor: multiWellData[wellId]?.map(d => {
+      pointBackgroundColor: multiWellData[wellId as keyof typeof multiWellData]?.map(d => {
         if (d.status === 'severe') return '#ef4444'
         if (d.status === 'interference') return '#f97316'
         if (d.status === 'affected') return '#eab308'
         return chartColors[index]
       }) || [],
-      pointRadius: multiWellData[wellId]?.map(d => d.status.includes('interference') || d.status === 'severe' ? 8 : 4) || []
+      pointRadius: multiWellData[wellId as keyof typeof multiWellData]?.map(d => d.status.includes('interference') || d.status === 'severe' ? 8 : 4) || []
     }))
   }
 
@@ -576,7 +576,7 @@ Would you like me to:
     labels: multiWellData['X1'].map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })),
     datasets: selectedWells.map((wellId, index) => ({
       label: `Well ${wellId} Water Cut`,
-      data: multiWellData[wellId]?.map(d => d.waterCut) || [],
+      data: multiWellData[wellId as keyof typeof multiWellData]?.map(d => d.waterCut) || [],
       borderColor: chartColors[index + 4],
       backgroundColor: chartColors[index + 4] + '40',
       fill: true,
@@ -588,7 +588,7 @@ Would you like me to:
     labels: multiWellData['X1'].map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })),
     datasets: selectedWells.map((wellId, index) => ({
       label: `Well ${wellId} Pressure`,
-      data: multiWellData[wellId]?.map(d => d.pressure) || [],
+      data: multiWellData[wellId as keyof typeof multiWellData]?.map(d => d.pressure) || [],
       borderColor: chartColors[index + 2],
       backgroundColor: chartColors[index + 2] + '30',
       fill: false,
@@ -632,7 +632,7 @@ Would you like me to:
       label: 'Offset Wells - Interference Study',
       data: Object.keys(wellCoordinates).map(wellId => {
         const coord = wellCoordinates[wellId]
-        const latestData = multiWellData[wellId]?.[multiWellData[wellId].length - 1]
+        const latestData = multiWellData[wellId as keyof typeof multiWellData]?.[multiWellData[wellId as keyof typeof multiWellData]?.length - 1]
         return {
           x: coord.x,
           y: coord.y,
@@ -1069,7 +1069,7 @@ Would you like me to:
                           afterLabel: function(context: any) {
                             if (analysisMode === 'interference') {
                               const wellId = selectedWells[context.datasetIndex]
-                              const dataPoint = multiWellData[wellId]?.[context.dataIndex]
+                              const dataPoint = multiWellData[wellId as keyof typeof multiWellData]?.[context.dataIndex]
                               if (dataPoint) {
                                 let status = dataPoint.status
                                 if (status === 'severe') return '🔴 Severe Interference Detected'
