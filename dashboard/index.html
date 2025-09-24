@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qualia Solutions - AI Reservoir Analytics</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="header__brand">
+                <div class="header__logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="12" fill="var(--color-primary)" />
+                        <circle cx="16" cy="16" r="6" fill="var(--color-background)" />
+                    </svg>
+                </div>
+                <div class="header__text">
+                    <h1>Qualia Solutions</h1>
+                    <p>AI Reservoir Analytics</p>
+                </div>
+            </div>
+            <div class="header__actions">
+                <button class="btn btn--outline btn--sm">Export Data</button>
+                <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar__section">
+                <h3>Well Selection</h3>
+                <select id="wellFilter" class="form-control">
+                    <option value="all">All Wells</option>
+                    <option value="MN-0002HST1">MN-0002HST1</option>
+                    <option value="MN-0010">MN-0010</option>
+                    <option value="MN-0002">MN-0002</option>
+                </select>
+            </div>
+
+            <div class="sidebar__section">
+                <h3>Date Range</h3>
+                <select id="dateFilter" class="form-control">
+                    <option value="all">All Time</option>
+                    <option value="2019">2019</option>
+                    <option value="6m">Last 6 Months</option>
+                    <option value="3m">Last 3 Months</option>
+                </select>
+            </div>
+
+            <div class="sidebar__section">
+                <h3>Reservoir Type</h3>
+                <select id="reservoirFilter" class="form-control">
+                    <option value="all">All Reservoirs</option>
+                    <option value="Mishrif">Mishrif</option>
+                    <option value="Wara">Wara</option>
+                    <option value="Burgan">Burgan</option>
+                    <option value="MM">MM</option>
+                </select>
+            </div>
+
+            <div class="sidebar__section">
+                <h3>Quick Actions</h3>
+                <button class="btn btn--secondary btn--sm btn--full-width" onclick="refreshData()">
+                    Refresh Data
+                </button>
+                <button class="btn btn--outline btn--sm btn--full-width" onclick="generateReport()">
+                    Generate Report
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- KPI Cards -->
+            <section class="kpi-section">
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">🛢️</div>
+                    <div class="kpi-card__content">
+                        <h3>Total Oil Production</h3>
+                        <div class="kpi-card__value" id="totalOilProduction">451.30</div>
+                        <div class="kpi-card__unit">barrels/day</div>
+                    </div>
+                    <div class="kpi-card__trend positive">↑ 5.2%</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">💧</div>
+                    <div class="kpi-card__content">
+                        <h3>Average Water Cut</h3>
+                        <div class="kpi-card__value" id="averageWaterCut">10.60</div>
+                        <div class="kpi-card__unit">%</div>
+                    </div>
+                    <div class="kpi-card__trend neutral">↔ 0.1%</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">🏗️</div>
+                    <div class="kpi-card__content">
+                        <h3>Active Wells</h3>
+                        <div class="kpi-card__value" id="activeWells">56</div>
+                        <div class="kpi-card__unit">wells</div>
+                    </div>
+                    <div class="kpi-card__trend positive">↑ 3</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">📉</div>
+                    <div class="kpi-card__content">
+                        <h3>Field Decline Rate</h3>
+                        <div class="kpi-card__value" id="fieldDeclineRate">8.5</div>
+                        <div class="kpi-card__unit">%</div>
+                    </div>
+                    <div class="kpi-card__trend negative">↓ 2.1%</div>
+                </div>
+            </section>
+
+            <!-- Production Charts -->
+            <section class="chart-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Production Trends</h3>
+                        <select id="productionView" class="form-control chart-control">
+                            <option value="field">Combined Field View</option>
+                            <option value="individual">Individual Wells</option>
+                        </select>
+                    </div>
+                    <div class="chart-wrapper" style="height: 300px; position: relative;">
+                        <canvas id="productionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- AI Insights Panel -->
+                <div class="ai-panel">
+                    <div class="ai-header">
+                        <div class="ai-icon">🤖</div>
+                        <h3>AI Assistant</h3>
+                    </div>
+                    <div class="ai-chat" id="aiChat">
+                        <div class="ai-message">
+                            <div class="ai-avatar">AI</div>
+                            <div class="ai-content">
+                                <p>Well MN-0002HST1 shows 15% decline rate - recommend ESP optimization</p>
+                            </div>
+                        </div>
+                        <div class="ai-message">
+                            <div class="ai-avatar">AI</div>
+                            <div class="ai-content">
+                                <p>Water cut increasing in northern sector - consider waterflood adjustment</p>
+                            </div>
+                        </div>
+                        <div class="ai-message">
+                            <div class="ai-avatar">AI</div>
+                            <div class="ai-content">
+                                <p>GOR trends suggest gas cap expansion in Mishrif reservoir</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ai-input">
+                        <input type="text" id="aiQuery" placeholder="Ask about well performance..." class="form-control">
+                        <button class="btn btn--primary" onclick="submitAiQuery()">Send</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Well Location Map -->
+            <section class="map-section">
+                <div class="map-container">
+                    <div class="chart-header">
+                        <h3>Well Locations</h3>
+                        <div class="map-legend">
+                            <div class="legend-item">
+                                <div class="legend-color high"></div>
+                                <span>High Production</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color medium"></div>
+                                <span>Medium Production</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color low"></div>
+                                <span>Low Production</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper" style="height: 300px; position: relative;">
+                        <canvas id="wellLocationChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Reservoir Analytics -->
+                <div class="analytics-panel">
+                    <div class="analytics-tabs">
+                        <button class="tab active" onclick="switchTab('watercut')">Water Cut</button>
+                        <button class="tab" onclick="switchTab('gor')">GOR Trends</button>
+                        <button class="tab" onclick="switchTab('decline')">Decline Analysis</button>
+                    </div>
+                    <div class="analytics-content">
+                        <div id="watercut-tab" class="tab-content active">
+                            <div class="chart-wrapper" style="height: 250px; position: relative;">
+                                <canvas id="watercutChart"></canvas>
+                            </div>
+                        </div>
+                        <div id="gor-tab" class="tab-content">
+                            <div class="chart-wrapper" style="height: 250px; position: relative;">
+                                <canvas id="gorChart"></canvas>
+                            </div>
+                        </div>
+                        <div id="decline-tab" class="tab-content">
+                            <div class="chart-wrapper" style="height: 250px; position: relative;">
+                                <canvas id="declineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Well Details Modal -->
+    <div class="modal hidden" id="wellModal">
+        <div class="modal-backdrop" onclick="closeWellModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalWellName">Well Details</h3>
+                <button class="modal-close" onclick="closeWellModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalWellData">
+                <!-- Well data will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
