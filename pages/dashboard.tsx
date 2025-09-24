@@ -340,8 +340,8 @@ export default function Dashboard() {
   const generatePredictionData = (actualData: number[]) => {
     const lastValue = actualData[actualData.length - 1]
     const predictions = [...actualData]
-    const declineRate = reservoirFilter !== 'all' && reservoirProfiles[reservoirFilter]
-      ? reservoirProfiles[reservoirFilter].kpis.fieldDeclineRate / 100
+    const declineRate = reservoirFilter !== 'all' && reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles]
+      ? reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles].kpis.fieldDeclineRate / 100
       : 0.08
 
     for (let i = 1; i <= 3; i++) {
@@ -467,8 +467,8 @@ Expected improvement: 15-20% production increase`
     }
 
     if (lowerQuery.includes('pressure')) {
-      const pressure = reservoirFilter !== 'all' && reservoirProfiles[reservoirFilter]
-        ? reservoirProfiles[reservoirFilter].avgPressure
+      const pressure = reservoirFilter !== 'all' && reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles]
+        ? reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles].avgPressure
         : 2400
       return `Current average reservoir pressure: ${pressure} psi
 Pressure decline rate: 2.5% monthly
@@ -862,8 +862,8 @@ Would you like me to:
             ) : (
               <select className="form-control" value={wellFilter} onChange={(e) => setWellFilter(e.target.value)}>
                 <option value="all">All Wells</option>
-                {reservoirFilter !== 'all' && reservoirProfiles[reservoirFilter]
-                  ? reservoirProfiles[reservoirFilter].wells.map(well => (
+                {reservoirFilter !== 'all' && reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles]
+                  ? reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles].wells.map(well => (
                       <option key={well} value={well}>{well}</option>
                     ))
                   : <>
@@ -898,8 +898,8 @@ Would you like me to:
                 setAnimateKpis(true)
                 setTimeout(() => setAnimateKpis(false), 600)
 
-                if (e.target.value !== 'all' && reservoirProfiles[e.target.value]) {
-                  setKpis(reservoirProfiles[e.target.value].kpis)
+                if (e.target.value !== 'all' && reservoirProfiles[e.target.value as keyof typeof reservoirProfiles]) {
+                  setKpis(reservoirProfiles[e.target.value as keyof typeof reservoirProfiles].kpis)
                   addAlert(`📊 Switched to ${e.target.value} reservoir data`)
                 } else {
                   setKpis(defaultKpis)
@@ -913,25 +913,25 @@ Would you like me to:
             </select>
           </div>
 
-          {reservoirFilter !== 'all' && reservoirProfiles[reservoirFilter] && (
+          {reservoirFilter !== 'all' && reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles] && (
             <div className="sidebar__section">
               <h3>Reservoir Properties</h3>
               <div className="reservoir-props">
                 <div className="prop-item">
                   <span>Porosity:</span>
-                  <strong>{reservoirProfiles[reservoirFilter].porosity}%</strong>
+                  <strong>{reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles].porosity}%</strong>
                 </div>
                 <div className="prop-item">
                   <span>Permeability:</span>
-                  <strong>{reservoirProfiles[reservoirFilter].permeability} mD</strong>
+                  <strong>{reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles].permeability} mD</strong>
                 </div>
                 <div className="prop-item">
                   <span>Avg Pressure:</span>
-                  <strong>{reservoirProfiles[reservoirFilter].avgPressure} psi</strong>
+                  <strong>{reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles].avgPressure} psi</strong>
                 </div>
                 <div className="prop-item">
                   <span>Temperature:</span>
-                  <strong>{reservoirProfiles[reservoirFilter].avgTemp}°C</strong>
+                  <strong>{reservoirProfiles[reservoirFilter as keyof typeof reservoirProfiles].avgTemp}°C</strong>
                 </div>
               </div>
             </div>
