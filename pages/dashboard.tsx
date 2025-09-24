@@ -639,7 +639,7 @@ Would you like me to:
     datasets: [{
       label: 'Offset Wells - Interference Study',
       data: Object.keys(wellCoordinates).map(wellId => {
-        const coord = wellCoordinates[wellId]
+        const coord = wellCoordinates[wellId as keyof typeof wellCoordinates]
         const latestData = multiWellData[wellId as keyof typeof multiWellData]?.[multiWellData[wellId as keyof typeof multiWellData]?.length - 1]
         return {
           x: coord.x,
@@ -847,7 +847,7 @@ Would you like me to:
                     />
                     <span>Well {wellId}</span>
                     <small style={{ display: 'block', color: 'var(--color-text-secondary)' }}>
-                      {wellCoordinates[wellId].distance}m from X1
+                      {wellCoordinates[wellId as keyof typeof wellCoordinates].distance}m from X1
                     </small>
                   </label>
                 ))}
