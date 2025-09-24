@@ -390,13 +390,21 @@ export default function Dashboard() {
         let totalProdLoss = 0
 
         Object.keys(multiWellData).forEach(wellId => {
-          const interference = detectInterference(wellId, multiWellData[wellId as keyof typeof multiWellData])
-          if (interference.severity === 'severe_interference') {
-            severeCases.push({ well: wellId, loss: interference.productionLoss })
-            totalProdLoss += interference.productionLoss
-          } else if (interference.severity === 'moderate_interference') {
-            moderateCases.push({ well: wellId, loss: interference.productionLoss })
-            totalProdLoss += interference.productionLoss
+          const interferenceEvents = detectInterference(wellId, multiWellData[wellId as keyof typeof multiWellData])
+
+          if (interferenceEvents.length > 0) {
+            // Calculate total production loss from all interference events
+            const totalLoss = interferenceEvents.reduce((sum, event) => sum + event.oilLoss, 0)
+            const averageLoss = totalLoss / interferenceEvents.length
+
+            // Classify based on severity and frequency
+            if (interferenceEvents.length > 3 && averageLoss > 20) {
+              severeCases.push({ well: wellId, loss: averageLoss })
+              totalProdLoss += averageLoss
+            } else if (interferenceEvents.length > 1 || averageLoss > 10) {
+              moderateCases.push({ well: wellId, loss: averageLoss })
+              totalProdLoss += averageLoss
+            }
           }
         })
 
