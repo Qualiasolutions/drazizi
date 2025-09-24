@@ -385,8 +385,8 @@ export default function Dashboard() {
     if (analysisMode === 'interference' && showInterferenceAlerts) {
       // Analyze interference patterns and send AI recommendations
       const interferenceAnalysis = () => {
-        const severeCases = []
-        const moderateCases = []
+        const severeCases: Array<{well: string, loss: number}> = []
+        const moderateCases: Array<{well: string, loss: number}> = []
         let totalProdLoss = 0
 
         Object.keys(multiWellData).forEach(wellId => {
