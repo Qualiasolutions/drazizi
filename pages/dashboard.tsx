@@ -14,7 +14,7 @@ const reservoirData = [
   { date: '11/30/2019', well: 'MN-0002HST1', x: 746887.95, y: 3214609.83, oilRate: 597.5, waterCut: 0.2, gor: 0.044, cumOil: 72.1, activeWells: 1 }
 ]
 
-const kpis = {
+const defaultKpis = {
   totalOilProduction: 451.30,
   averageWaterCut: 10.60,
   activeWells: 56,
@@ -25,12 +25,14 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('watercut')
   const [wellFilter, setWellFilter] = useState('all')
   const [dateFilter, setDateFilter] = useState('all')
+  const [reservoirFilter, setReservoirFilter] = useState('all')
   const [aiQuery, setAiQuery] = useState('')
   const [aiMessages, setAiMessages] = useState([
     { sender: 'AI', message: 'Well MN-0002HST1 shows 15% decline rate - recommend ESP optimization', isUser: false }
   ])
   const [showWellModal, setShowWellModal] = useState(false)
   const [selectedWell, setSelectedWell] = useState<any>(null)
+  const [kpis, setKpis] = useState(defaultKpis)
 
   const chartColors = ['#1FB8CD', '#FFC185', '#B4413C', '#ECEBD5', '#5D878F', '#DB4545', '#D2BA4C', '#964325', '#944454', '#13343B']
 
@@ -200,7 +202,34 @@ export default function Dashboard() {
 
           <div className="sidebar__section">
             <h3>Reservoir Type</h3>
-            <select className="form-control">
+            <select className="form-control" value={reservoirFilter} onChange={(e) => {
+              setReservoirFilter(e.target.value)
+              // Update KPIs based on reservoir selection
+              if (e.target.value === 'Mishrif') {
+                setKpis({
+                  totalOilProduction: 520.45,
+                  averageWaterCut: 12.3,
+                  activeWells: 42,
+                  fieldDeclineRate: 7.2
+                })
+              } else if (e.target.value === 'Wara') {
+                setKpis({
+                  totalOilProduction: 380.20,
+                  averageWaterCut: 8.9,
+                  activeWells: 28,
+                  fieldDeclineRate: 9.8
+                })
+              } else if (e.target.value === 'Burgan') {
+                setKpis({
+                  totalOilProduction: 610.75,
+                  averageWaterCut: 14.5,
+                  activeWells: 68,
+                  fieldDeclineRate: 6.3
+                })
+              } else {
+                setKpis(defaultKpis)
+              }
+            }}>
               <option value="all">All Reservoirs</option>
               <option value="Mishrif">Mishrif</option>
               <option value="Wara">Wara</option>
