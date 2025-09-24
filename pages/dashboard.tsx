@@ -725,7 +725,7 @@ Would you like me to:
         backgroundColor: 'rgba(0,0,0,0.8)',
         padding: 12,
         cornerRadius: 8,
-        titleFont: { size: 14, weight: 'bold' },
+        titleFont: { size: 14, weight: 'bold' as const },
         bodyFont: { size: 12 },
         callbacks: {
           afterLabel: function(context: any) {
